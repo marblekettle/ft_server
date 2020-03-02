@@ -1,14 +1,33 @@
+#server {
+#	listen 443;
+#	
+#	root /server;
+#
+#	index index.php;
+#	server_name localhost;
+#
+#	ssl on;
+#	ssl_certificate /cert.pem;
+#	ssl_certificate_key /key.pem;
+#}
+
 server {
 	listen 80 default_server;
 	listen [::]:80 default_server;
 
 	root /server;
-
 	index index.php;
+
 	server_name localhost;
 
 	location / {
+		autoindex on;
+		root /wordpress;
 		try_files $uri $uri/ =404;
+	}
+
+	location /phpmyadmin/ {
+		root /phpmyadmin;
 	}
 
 	location ~ \.php$ {
