@@ -1,33 +1,39 @@
-#server {
-#	listen 443;
-#	
-#	root /server;
-#
-#	index index.php;
-#	server_name localhost;
-#
-#	ssl on;
-#	ssl_certificate /cert.pem;
-#	ssl_certificate_key /key.pem;
-#}
+server {
+	listen 443;
+	listen [::]:443;
+
+	root /server;
+
+	index index.php;
+	server_name localhost;
+
+	ssl on;
+	ssl_certificate /cert.pem;
+	ssl_certificate_key /key.pem;
+
+	location / {
+		autoindex on;
+		try_files $uri $uri/ =404;
+	}
+
+	location ~ \.php$ {
+		include snippets/fastcgi-php.conf;
+		fastcgi_pass unix:/var/run/php/php7.3-fpm.sock;
+	}
+}
 
 server {
 	listen 80 default_server;
 	listen [::]:80 default_server;
 
-	root /server;
+	root /server/wordpress;
 	index index.php;
 
 	server_name localhost;
 
 	location / {
 		autoindex on;
-		root /wordpress;
 		try_files $uri $uri/ =404;
-	}
-
-	location /phpmyadmin/ {
-		root /phpmyadmin;
 	}
 
 	location ~ \.php$ {

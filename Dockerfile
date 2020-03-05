@@ -21,17 +21,17 @@ RUN	wget -q -P ${SERVER_DIR} https://dev.mysql.com/get/mysql-apt-config_0.8.14-1
 &&	apt-get update \
 &&	apt-get install mariadb-server mariadb-client php-mysql -y
 
-#PHPMyAdmin
-RUN	wget -q -P ${SERVER_DIR} https://files.phpmyadmin.net/phpMyAdmin/4.9.4/phpMyAdmin-4.9.4-english.tar.gz \
-&&	tar -xf ${SERVER_DIR}/phpMyAdmin-4.9.4-english.tar.gz -C ${SERVER_DIR} \
-&&	mv ${SERVER_DIR}/phpMyAdmin-4.9.4-english ${SERVER_DIR}/phpmyadmin
-
 #Wordpress
 RUN	wget -q -P ${SERVER_DIR} https://wordpress.org/latest.tar.gz \
 &&	tar -xf ${SERVER_DIR}/latest.tar.gz -C ${SERVER_DIR} \
 &&	mkdir /usr/bin/wp \
 &&	wget -q -P /usr/bin/wp https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar \
 &&	chmod +x /usr/bin/wp/wp-cli.phar
+
+#PHPMyAdmin
+RUN	wget -q -P ${SERVER_DIR} https://files.phpmyadmin.net/phpMyAdmin/4.9.4/phpMyAdmin-4.9.4-english.tar.gz \
+&&	tar -xf ${SERVER_DIR}/phpMyAdmin-4.9.4-english.tar.gz -C ${SERVER_DIR} \
+&&	mv ${SERVER_DIR}/phpMyAdmin-4.9.4-english ${SERVER_DIR}/wordpress/phpmyadmin
 
 #Create user
 RUN	useradd ${USER_NAME} \
