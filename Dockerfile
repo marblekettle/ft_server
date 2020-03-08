@@ -28,20 +28,23 @@ RUN	openssl req -x509 -nodes -new -out /cert.crt -keyout /cert.key -subj \
 RUN	wget -q -P ${SERVER_DIR} https://dev.mysql.com/get/mysql-apt-config_0.8.14-1_all.deb \
 &&	dpkg -i ${SERVER_DIR}/mysql-apt-config_0.8.14-1_all.deb \
 &&	apt-get update \
-&&	apt-get install mariadb-server mariadb-client php-mysql -y
+&&	apt-get install mariadb-server mariadb-client php-mysql -y \
+&&	rm ${SERVER_DIR}/mysql-apt-config_0.8.14-1_all.deb
 
 #Wordpress
 RUN	wget -q -P ${SERVER_DIR} https://wordpress.org/latest.tar.gz \
 &&	tar -xf ${SERVER_DIR}/latest.tar.gz -C ${SERVER_DIR} \
 &&	mkdir /usr/bin/wp \
 &&	wget -q -P /usr/bin/wp https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar \
-&&	chmod +x /usr/bin/wp/wp-cli.phar
+&&	chmod +x /usr/bin/wp/wp-cli.phar \
+&&	rm ${SERVER_DIR}/latest.tar.gz
 
 #PHPMyAdmin
 RUN	wget -q -P ${SERVER_DIR} https://files.phpmyadmin.net/phpMyAdmin/4.9.4/phpMyAdmin-4.9.4-english.tar.gz \
 &&	tar -xf ${SERVER_DIR}/phpMyAdmin-4.9.4-english.tar.gz -C ${SERVER_DIR} \
 &&	mv ${SERVER_DIR}/phpMyAdmin-4.9.4-english ${SERVER_DIR}/wordpress/phpmyadmin \
-&&	mkdir ${SERVER_DIR}/wordpress/phpmyadmin/tmp
+&&	mkdir ${SERVER_DIR}/wordpress/phpmyadmin/tmp \
+&&	rm ${SERVER_DIR}/phpMyAdmin-4.9.4-english.tar.gz
 
 #Create user & permissions
 RUN	useradd ${USER_NAME} \
@@ -51,16 +54,10 @@ RUN	useradd ${USER_NAME} \
 &&	chmod -R 777 ${SERVER_DIR}/wordpress/wp-content \
 &&	chmod -R 777 ${SERVER_DIR}/wordpress/phpmyadmin/tmp
 
-#Cleanup
-RUN	rm ${SERVER_DIR}/phpMyAdmin-4.9.4-english.tar.gz \
-&&	rm ${SERVER_DIR}/mysql-apt-config_0.8.14-1_all.deb \
-&&	rm ${SERVER_DIR}/latest.tar.gz
-
 #Copy config files
 COPY ./srcs/default /etc/nginx/sites-enabled/
 COPY ./srcs/wp-config.php ${SERVER_DIR}/wordpress/
 COPY ./srcs/config.inc.php ${SERVER_DIR}/wordpress/phpmyadmin
-COPY ./srcs/index.php ${SERVER_DIR}
 
 USER ${USER_NAME}
 EXPOSE 80 443 3306
