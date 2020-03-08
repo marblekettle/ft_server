@@ -9,8 +9,10 @@ ENV	WP_TITLE		"The Blog of an Unrecognized Genius"
 ENV SERVER_DIR		server
 ENV SERVER_DATABASE	where_to_put_mysql_stuff
 ENV USER_NAME		admin
+#Change these
 ENV	MYSQL_PASSWORD	moulinette
 ENV MYSQL_EMAIL		bmans@student.codam.nl
+#DEFINITELY change this
 ENV	USER_PASSWORD	1234
 
 #Prerequisites
