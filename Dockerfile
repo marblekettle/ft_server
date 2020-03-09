@@ -5,11 +5,11 @@ ENV CSR_STATE		"Noord Holland"
 ENV CSR_LOCATION	"Amsterdam"
 ENV	CSR_ORGANIZAT	"Codam Coding College"
 
+#Change these
 ENV	WP_TITLE		"The Blog of an Unrecognized Genius"
 ENV SERVER_DIR		server
 ENV SERVER_DATABASE	where_to_put_mysql_stuff
 ENV USER_NAME		admin
-#Change these
 ENV	MYSQL_PASSWORD	moulinette
 ENV MYSQL_EMAIL		bmans@student.codam.nl
 #DEFINITELY change this
@@ -19,19 +19,13 @@ ENV	USER_PASSWORD	1234
 RUN echo "Welcome to my Docker image :)" \
 &&	apt-get update \
 &&	apt-get upgrade -y \
-&&	apt-get install dialog apt-utils sudo vim wget nginx php-fpm php-mbstring lsb-release gnupg -y \
+&&	apt-get install dialog apt-utils sudo vim wget nginx php-fpm php-mbstring \
+	lsb-release gnupg mariadb-server mariadb-client php-mysql -y \
 &&	mkdir ${SERVER_DIR}
 
 #SSL certificate
 RUN	openssl req -x509 -nodes -new -out /cert.crt -keyout /cert.key -subj \
 	"/C=${CSR_COUNTRY}/ST=${CSR_STATE}/L=${CSR_LOCATION}/O=${CSR_ORGANIZAT}"
-
-#MySQL
-RUN	wget -q -P ${SERVER_DIR} https://dev.mysql.com/get/mysql-apt-config_0.8.14-1_all.deb \
-&&	dpkg -i ${SERVER_DIR}/mysql-apt-config_0.8.14-1_all.deb \
-&&	apt-get update \
-&&	apt-get install mariadb-server mariadb-client php-mysql -y \
-&&	rm ${SERVER_DIR}/mysql-apt-config_0.8.14-1_all.deb
 
 #Wordpress
 RUN	wget -q -P ${SERVER_DIR} https://wordpress.org/latest.tar.gz \
